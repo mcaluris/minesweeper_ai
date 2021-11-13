@@ -12,6 +12,7 @@ MINES = 8
 BLACK = (0, 0, 0)
 GRAY = (180, 180, 180)
 WHITE = (255, 255, 255)
+RED = (255, 153, 255)
 
 # Create game
 pygame.init()
@@ -45,6 +46,8 @@ ai = MinesweeperAI(height=HEIGHT, width=WIDTH)
 revealed = set()
 flags = set()
 lost = False
+
+showKnowledge = False
 
 # Show instructions initially
 instructions = True
@@ -113,6 +116,9 @@ while True:
             pygame.draw.rect(screen, GRAY, rect)
             pygame.draw.rect(screen, WHITE, rect, 3)
 
+            safe_cells = ai.get_safes()
+            mine_cells = ai.get_mines()
+
             # Add a mine, flag, or number if needed
             if game.is_mine((i, j)) and lost:
                 screen.blit(mine, rect)
@@ -126,9 +132,24 @@ while True:
                 neighborsTextRect = neighbors.get_rect()
                 neighborsTextRect.center = rect.center
                 screen.blit(neighbors, neighborsTextRect)
+            elif (i, j) in safe_cells and showKnowledge:
+                pygame.draw.rect(screen, RED, rect)
+            elif (i, j) in mine_cells and showKnowledge:
+                screen.blit(mine, rect)
 
             row.append(rect)
         cells.append(row)
+
+    safesMinesButton = pygame.Rect(
+        (2 / 3) * width + BOARD_PADDING, BOARD_PADDING + 280,
+        (width / 3) - BOARD_PADDING * 2, 50
+    )
+    bText = "AI Knowledge" if not showKnowledge else "Hide Knowledge"
+    buttonText = smallFont.render(bText, True, BLACK)
+    buttonRect = buttonText.get_rect()
+    buttonRect.center = safesMinesButton.center
+    pygame.draw.rect(screen, WHITE, safesMinesButton)
+    screen.blit(buttonText, buttonRect)
 
     # AI Move button
     aiButton = pygame.Rect(
@@ -200,6 +221,11 @@ while True:
             flags = set()
             lost = False
             continue
+
+        # If Inference button clicked, toggle showInference
+        elif safesMinesButton.collidepoint(mouse):
+            showKnowledge = not showKnowledge
+            time.sleep(0.2)
 
         # User-made move
         elif not lost:

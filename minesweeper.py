@@ -157,6 +157,16 @@ class MinesweeperAI():
         # List of sentences about the game known to be true
         self.knowledge = []
 
+    def get_safes(self):
+        if self.safes:
+            return self.safes
+        return []
+
+    def get_mines(self):
+        if self.mines:
+            return self.mines
+        return []
+
     def mark_mine(self, cell):
         """
         Marks a cell as a mine, and updates all knowledge
@@ -179,7 +189,6 @@ class MinesweeperAI():
         """
         Called when the Minesweeper board tells us, for a given
         safe cell, how many neighboring cells have mines in them.
-
         """
         self.moves_made.add(cell)
         self.mark_safe(cell)
@@ -206,7 +215,6 @@ class MinesweeperAI():
     def make_random_move(self):
         """
         Returns a move to make on the Minesweeper board.
-
         """
         moves_left_to_play = []
         for i in range(8):
@@ -262,6 +270,7 @@ class MinesweeperAI():
     def make_inferences(self, new_sentence):
         self.clean_up()
         for sentence in self.knowledge:
+            print(self.knowledge)
             self.clean_up()
             print(self.knowledge)
             if sentence.cells.issuperset(new_sentence.cells):
