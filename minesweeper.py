@@ -268,11 +268,8 @@ class MinesweeperAI():
         self.knowledge = unique_knowledge
 
     def make_inferences(self, new_sentence):
-        self.clean_up()
         for sentence in self.knowledge:
-            print(self.knowledge)
             self.clean_up()
-            print(self.knowledge)
             if sentence.cells.issuperset(new_sentence.cells):
                 set_difference = sentence.cells.difference(new_sentence.cells)
                 if set_difference:
